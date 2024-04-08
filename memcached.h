@@ -1093,3 +1093,11 @@ extern void drop_worker_privileges(void);
 
 #define likely(x)       __builtin_expect((x),1)
 #define unlikely(x)     __builtin_expect((x),0)
+
+#ifdef PIN_HOOK
+#include <stdio.h>
+#include <sys/time.h>
+extern struct timeval  roi_tick, roi_tock;
+void pin_hook_fini(void);
+void pin_hook_init(void);
+#endif

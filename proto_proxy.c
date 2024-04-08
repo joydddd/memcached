@@ -318,6 +318,7 @@ void *proxy_init(bool use_uring, bool proxy_memprofile) {
     proxy_init_event_thread(t, ctx, NULL);
 
     pthread_create(&t->thread_id, NULL, proxy_event_thread, t);
+    printf(stderr, "[Info] Created proxy event thread\n");
     thread_setname(t->thread_id, "mc-prx-io");
 
     _start_proxy_config_threads(ctx);

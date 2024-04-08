@@ -1011,9 +1011,10 @@ item *do_item_get(const char *key, const size_t nkey, const uint32_t hv, LIBEVEN
         } else if (was_found) {
             fprintf(stderr, "> FOUND KEY ");
         }
-        for (ii = 0; ii < nkey; ++ii) {
-            fprintf(stderr, "%c", key[ii]);
-        }
+        fprintf(stderr, "%.*s\n", nkey, key);
+        // for (ii = 0; ii < nkey; ++ii) {
+        //     fprintf(stderr, "%c", key[ii]);
+        // }
     }
 
     if (it != NULL) {
@@ -1732,6 +1733,7 @@ int start_lru_maintainer_thread(void *arg) {
         pthread_mutex_unlock(&lru_maintainer_lock);
         return -1;
     }
+    fprintf(stderr, "[Info] create lru maintainer thread\n");
     thread_setname(lru_maintainer_tid, "mc-lrumaint");
     pthread_mutex_unlock(&lru_maintainer_lock);
 

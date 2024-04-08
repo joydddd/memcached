@@ -2765,6 +2765,27 @@ static void process_refresh_certs_command(conn *c, token_t *tokens, const size_t
 }
 #endif
 
+
+/* used for pin tool */
+#ifdef PIN_HOOK
+struct timeval  roi_tick, roi_tock;
+#include "sim_api.h"
+
+__attribute__ ((noinline)) void pin_hook_init(void) {
+    fprintf(stderr, "PIN START\n");
+   gettimeofday(&roi_tick, NULL);
+   SimRoiStart();
+}
+__attribute__ ((noinline)) void pin_hook_fini(void) {
+    fprintf(stderr, "PIN END\n");
+    gettimeofday(&roi_tock, NULL);
+    fprintf (stderr, "Kernel time = %f seconds\n",
+         (double) (roi_tock.tv_usec - roi_tick.tv_usec) / 1000000 +
+         (double) (roi_tock.tv_sec - roi_tick.tv_sec));
+    SimRoiEnd();
+}
+#endif /* PIN_HOOK */
+
 // TODO: pipelined commands are incompatible with shifting connections to a
 // side thread. Given this only happens in two instances (watch and
 // lru_crawler metadump) it should be fine for things to bail. It _should_ be
@@ -2785,6 +2806,16 @@ void process_command_ascii(conn *c, char *command) {
 
     if (settings.verbose > 1)
         fprintf(stderr, "<%d %s\n", c->sfd, command);
+#ifdef PIN_HOOK
+    static bool pin_started = false;
+    if (strncmp(command, "set hello_key", 13) == 0 && __sync_bool_compare_and_swap(&pin_started, false, true)){
+        pin_hook_init();
+    }
+    if (strncmp(command, "shutdown", 8) == 0){
+        pin_hook_fini();
+    }
+#endif /* PIN_HOOK */
+
 
     /*
      * for commands set/add/replace, we build an item and read the data
@@ -2861,7 +2892,6 @@ void process_command_ascii(conn *c, char *command) {
 
             process_stat(c, tokens, ntokens);
         } else if (strcmp(tokens[COMMAND_TOKEN].value, "shutdown") == 0) {
-
             process_shutdown_command(c, tokens, ntokens);
         } else if (strcmp(tokens[COMMAND_TOKEN].value, "slabs") == 0) {
 

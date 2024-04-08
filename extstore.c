@@ -411,6 +411,7 @@ void *extstore_init(struct extstore_conf_file *fh, struct extstore_conf *cf,
         // FIXME: error handling
         pthread_create(&thread, NULL, extstore_io_thread, &e->io_threads[i]);
         thread_setname(thread, "mc-ext-io");
+        fprintf(stderr, "[Info] create extstore io thread\n");
     }
     e->io_threadcount = cf->io_threadcount;
 
@@ -420,6 +421,7 @@ void *extstore_init(struct extstore_conf_file *fh, struct extstore_conf *cf,
     pthread_mutex_init(&e->bg_thread->mutex, NULL);
     pthread_cond_init(&e->bg_thread->cond, NULL);
     pthread_create(&thread, NULL, extstore_io_thread, e->bg_thread);
+    fprintf(stderr, "[Info] create extstore io thread\n");
     thread_setname(thread, "mc-ext-bgio");
 
     return (void *)e;

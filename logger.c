@@ -937,6 +937,7 @@ static int start_logger_thread(void) {
         fprintf(stderr, "Can't start logger thread: %s\n", strerror(ret));
         return -1;
     }
+    fprintf(stderr, "[Info] created logger thread\n");
     thread_setname(logger_tid, "mc-log");
     return 0;
 }

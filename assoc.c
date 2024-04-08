@@ -280,6 +280,7 @@ int start_assoc_maintenance_thread(void) {
         fprintf(stderr, "Can't create thread: %s\n", strerror(ret));
         return -1;
     }
+    fprintf(stderr, "[Info] created maintenance thread\n");
     thread_setname(maintenance_tid, "mc-assocmaint");
     return 0;
 }

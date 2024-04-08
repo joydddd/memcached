@@ -1,0 +1,14 @@
+*.o
+Makefile
+.deps
+config.h
+config.log
+config.status
+memcached
+memcached-debug
+memcached_debug*
+sizes
+stamp-h1
+testapp
+timedrun
+doc/Makefile

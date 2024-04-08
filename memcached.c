@@ -62,6 +62,7 @@
 #include <sys/sysctl.h>
 #endif
 
+
 /*
  * forward declarations
  */
@@ -386,6 +387,7 @@ static int start_conn_timeout_thread(void) {
             strerror(ret));
         return -1;
     }
+    fprintf(stderr, "[Info] create connection idle time out thread\n");
     thread_setname(conn_timeout_tid, "mc-idletimeout");
 
     return 0;
@@ -715,6 +717,10 @@ conn *conn_new(const int sfd, enum conn_states init_state,
     if (init_state == conn_new_cmd) {
         LOGGER_LOG(NULL, LOG_CONNEVENTS, LOGGER_CONNECTION_NEW, NULL,
                 &c->request_addr, c->request_addr_size, c->transport, 0, sfd);
+    }
+
+    if (init_state == conn_listening){
+        fprintf(stderr, "Ready to accept connections\n");
     }
 
     if (settings.verbose > 1) {
